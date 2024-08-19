@@ -1,0 +1,46 @@
+DOCKERFILES (NGINX, APACHE(WEB1 E 2), RABBITMQS, REDIS E MYSQL)
+APACHE
+FROM ubuntu:22.04
+RUN apt-get update
+RUN apt-get install apache2 -y
+RUN apt-get install vim -y
+CMD ["apachectl", "-D", "FOREGROUND"]
+EXPOSE 80
+
+NGINX
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y \
+	curl \
+	gnupg2 \
+	ca-certificates \
+	lsb-release \
+	ubuntu-keyring \
+	net-tools \
+	nginx
+CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 80 443
+
+RABBITMQS
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y rabbitmq-server
+RUN apt-get install net-tools -y
+RUN apt-get install vim -y
+CMD ["rabbitmq-server"]
+EXPOSE 5672 15672
+
+REDIS
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y redis-server
+RUN apt-get install net-tools -y
+RUN apt-get install vim -y
+CMD ["redis-server"]
+EXPOSE 6379
+
+MYSQL
+FROM ubuntu:22.04
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server \
+  && sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mysql/mysql.conf.d/mysqld.cnf
+RUN apt-get install vim -y
+CMD ["mysqld"]
+EXPOSE 3306
